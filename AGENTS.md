@@ -20,7 +20,9 @@ npm run test
 npm run build
 ```
 
-工程骨架任务完成之前，这些命令可能还不可用。
+使用 Node.js 22.12+。`test` 单次执行退出，`build` 先运行 TypeScript 检查。
+`npm run dev` 启动本地页面；`npm run test:browser` 运行真实图表和文件加载检查，
+首次需 `npx playwright install chromium`，也可设置 `PLAYWRIGHT_CHANNEL=chrome` 使用已安装 Chrome。
 
 ## 规则
 
@@ -28,6 +30,10 @@ npm run build
 - 结果 JSON 的格式以 quant-context 仓库的 `product.md` 为准，类型定义放在 `src/lib/`。
 - 布局参考 QuantStats 的 HTML tearsheet。可以看 FreqUI 的回测页找思路，但 freqtrade 是 GPL-3.0，不复制它的代码。
 - 组件测试用 `public/samples/` 里的示例 JSON，不依赖后端。
+- 所有结果先经 `src/lib/result.ts` 校验，再整体替换报告；保留失败前的成功报告，只有最新一次选择能提交状态。
+- 时间按 UTC 显示，指标和回撤直接取导出值；`trade_count` 是完整平仓轮数。
+- 月收益计算见 `src/lib/monthly.ts`；缺月不跨月借基数，边界不足整月要标明区间收益。
+- 图表实例在切换/卸载时销毁，通过 ResizeObserver 响应容器尺寸变化。运行时依赖许可见 THIRD_PARTY_NOTICES.md。
 
 ## 禁区
 
